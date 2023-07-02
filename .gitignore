@@ -1,0 +1,24 @@
+# dotenv environment variable files
+.env
+.env.development
+.env.test.local
+.env.production
+.env.local
+
+# Optional npm cache directory
+.npm
+
+# Dependency directories
+node_modules/
+jspm_packages/
+build/
+
+# TypeScript cache
+*.tsbuildinfo
+
+# VSConfig
+.vscode
+
+# use yarn for dev but npm for production
+yarn.lock
+yarn.err*
