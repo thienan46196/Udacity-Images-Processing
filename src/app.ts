@@ -54,17 +54,21 @@ class App {
       res.send('404 Not Found');
     });
 
-    let port = PORT || 4000;
-    
-    this.app.listen(port, () => {
-      console.log('App is listening at port:', port);
-    });
 
     // createServer(() => {
     //     this.app.listen(port, () => {
     //       console.log('App is listening at port:', port);
     //     });
     //   });
+
+
+
+    
+    const port = PORT || 4000;
+    
+    this.app.listen(port, () => {
+      console.log('App is listening at port:', port);
+    });
   } 
 }
 

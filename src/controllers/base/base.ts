@@ -1,4 +1,5 @@
-import { Controller, SuccessResponse } from 'tsoa';
+// import { Controller, SuccessResponse } from 'tsoa';
+
 import { NextFunction, Request, Response } from 'express';
 
 export abstract class BaseController {
@@ -6,13 +7,13 @@ export abstract class BaseController {
     req: Request,
     res: Response,
     next: NextFunction
-  ): Promise<void | any>;
+  ): Promise<void>;
 
   public async execute(
     req: Request,
     res: Response,
     next: NextFunction
-  ): Promise<void | any> {
+  ): Promise<void> {
     try {
       await this.executeImpl(req, res, next);
     } catch (err) {
