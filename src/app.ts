@@ -1,11 +1,8 @@
-// import AuthRoute from './routes/auth';
-
 import { PORT } from './configs/env-variables';
 import bodyParser from 'body-parser';
-import cookieParser from 'cookie-parser';
 import express from 'express';
+import imagesProcessingRoute from './routes/images-processing';
 import path from 'path';
-import swaggerUi from "swagger-ui-express";
 
 class App {
   public app: express.Application;
@@ -15,8 +12,6 @@ class App {
   }
 
   private config(): void {
-    this.app.use(cookieParser());
-
     this.app.use(bodyParser.json());
     this.app.use(bodyParser.urlencoded({ extended: true }));
 
@@ -35,11 +30,6 @@ class App {
       next();
     });
     
-    this.app.use("/docs",swaggerUi.serve, swaggerUi.setup(undefined, {
-      swaggerOptions: {
-        url: "/swagger.json",
-      }
-    }))
 
     //landing page
     this.app.get('/', (req, res) => {
@@ -47,22 +37,12 @@ class App {
     });
     
     //routes
-    // this.app.use("/auth",AuthRoute);
+    this.app.use("/api",imagesProcessingRoute)
     
     //fallback
     this.app.get('*', (req, res) => {
       res.send('404 Not Found');
     });
-
-
-    // createServer(() => {
-    //     this.app.listen(port, () => {
-    //       console.log('App is listening at port:', port);
-    //     });
-    //   });
-
-
-
     
     const port = PORT || 4000;
     
