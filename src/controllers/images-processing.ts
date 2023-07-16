@@ -2,7 +2,7 @@ import { Common, Constant } from '../resources/common';
 import { NextFunction, Request, Response as Res } from 'express';
 
 import fs from 'fs';
-import path from 'path';
+import { imageFileNameParser } from '../utils/helpers';
 import sharp from 'sharp';
 
 interface ImageProcessingSchema {
@@ -27,9 +27,8 @@ class ImagesProcessingController {
     let returnMessage = '';
     try {
       const fullPath = `${Constant.fullPath}${fileName}`;
-      const ext = path.extname(fullPath);
-      const _tempFileName = fileName.toString().replace(ext, '');
-      const thumbFileName = `${Constant.thumbPath}${_tempFileName}${width}x${height}${ext}`;
+
+      const thumbFileName = imageFileNameParser(`${Constant.thumbPath}${fileName}`, width, height);
 
       // check thumb existing
       if (fs.existsSync(thumbFileName)) {
@@ -39,7 +38,6 @@ class ImagesProcessingController {
             console.log(err.message);
             response.status(Common.server_error.status).json({ code: 'file_error', message: returnMessage });
           } else {
-            console.log('Return thumb');
             response.writeHead(Common.success.status, { 'Content-Type': 'image/jpeg' });
             response.end(data);
             return;
@@ -50,13 +48,11 @@ class ImagesProcessingController {
       else {
         if (!fs.existsSync(fullPath)) {
           returnMessage = 'The full file does not exist';
-          console.log(returnMessage);
-          response.status(Common.bad_request.status).json({ code: 'file_error', message: returnMessage });
+          response.status(Common.not_found.status).json({ code: 'file_error', message: returnMessage });
         } else {
           fs.readFile(fullPath, async function (err, data) {
             if (err) {
               returnMessage = 'Error reading full file';
-              console.log(returnMessage);
               response.status(Common.server_error.status).json({ code: 'file_error', message: returnMessage });
               return;
             }
