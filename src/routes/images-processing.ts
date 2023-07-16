@@ -12,7 +12,7 @@ class ImageProcessingRoute {
     this.imageProcessingRoute.get('/images-processing', (req, res, next) => {
       new ImageProcessingController().Process(req, res, next);
     });
-    
+
     this.imageProcessingRoute.get('/list-all-files', (req, res, next) => {
       new ImageProcessingController().ListAllImages(req, res, next);
     });

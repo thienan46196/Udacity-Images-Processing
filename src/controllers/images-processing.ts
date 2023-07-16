@@ -22,13 +22,21 @@ class ImagesProcessingController {
     const requestQueries = request.query || defaultRequestQuery;
 
     const fileName = requestQueries.fileName ? requestQueries?.fileName : '';
-    const width = requestQueries.width ? parseInt(requestQueries.width.toString()) : null;
-    const height = requestQueries.height ? parseInt(requestQueries.height.toString()) : null;
+    const width = requestQueries.width
+      ? parseInt(requestQueries.width.toString())
+      : null;
+    const height = requestQueries.height
+      ? parseInt(requestQueries.height.toString())
+      : null;
     let returnMessage = '';
     try {
       const fullPath = `${Constant.fullPath}${fileName}`;
 
-      const thumbFileName = imageFileNameParser(`${Constant.thumbPath}${fileName}`, width, height);
+      const thumbFileName = imageFileNameParser(
+        `${Constant.thumbPath}${fileName}`,
+        width,
+        height,
+      );
 
       // check thumb existing
       if (fs.existsSync(thumbFileName)) {
@@ -36,9 +44,13 @@ class ImagesProcessingController {
           if (err) {
             returnMessage = 'Error reading thumb file';
             console.log(err.message);
-            response.status(Common.server_error.status).json({ code: 'file_error', message: returnMessage });
+            response
+              .status(Common.server_error.status)
+              .json({ code: 'file_error', message: returnMessage });
           } else {
-            response.writeHead(Common.success.status, { 'Content-Type': 'image/jpeg' });
+            response.writeHead(Common.success.status, {
+              'Content-Type': 'image/jpeg',
+            });
             response.end(data);
             return;
           }
@@ -48,26 +60,40 @@ class ImagesProcessingController {
       else {
         if (!fs.existsSync(fullPath)) {
           returnMessage = 'The full file does not exist';
-          response.status(Common.not_found.status).json({ code: 'file_error', message: returnMessage });
+          response
+            .status(Common.not_found.status)
+            .json({ code: 'file_error', message: returnMessage });
         } else {
           fs.readFile(fullPath, async function (err, data) {
             if (err) {
               returnMessage = 'Error reading full file';
-              response.status(Common.server_error.status).json({ code: 'file_error', message: returnMessage });
+              response
+                .status(Common.server_error.status)
+                .json({ code: 'file_error', message: returnMessage });
               return;
             }
             // get original width & height
             const metaData = await sharp(data.buffer).metadata();
-            response.writeHead(Common.success.status, { 'Content-Type': 'image/jpeg' });
+            response.writeHead(Common.success.status, {
+              'Content-Type': 'image/jpeg',
+            });
 
-            if ((height && (metaData.height != height))  || (width && (metaData.width != width))) {
+            if (
+              (height && metaData.height != height) ||
+              (width && metaData.width != width)
+            ) {
               const _height = height ? height : metaData.height;
               const _width = width ? width : metaData.width;
               // resize image
-              const finalImage = await sharp(data).resize({ width: _width, height: _height }).toBuffer();
+              const finalImage = await sharp(data)
+                .resize({ width: _width, height: _height })
+                .toBuffer();
               fs.writeFile(thumbFileName, finalImage, function (err) {
                 if (err) {
-                  console.log('There is an error in writing the thumb file', err.message);
+                  console.log(
+                    'There is an error in writing the thumb file',
+                    err.message,
+                  );
                 }
               });
 
@@ -85,11 +111,20 @@ class ImagesProcessingController {
     }
   }
 
-  public async ListAllImages(request: Request, response: Res, next: NextFunction) {
+  public async ListAllImages(
+    request: Request,
+    response: Res,
+    next: NextFunction,
+  ) {
     fs.readdir(Constant.fullPath, function (err, files) {
       if (err) {
         console.error(err);
-        response.status(Common.server_error.status).json({ code: 'file_error', message: 'There is an error in reading files' });
+        response
+          .status(Common.server_error.status)
+          .json({
+            code: 'file_error',
+            message: 'There is an error in reading files',
+          });
       } else {
         response.json({ files });
         return;

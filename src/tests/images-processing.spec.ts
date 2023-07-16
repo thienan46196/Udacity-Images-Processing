@@ -1,4 +1,8 @@
-import { getExtractedFileName, getFileExtension, imageFileNameParser } from './../utils/helpers';
+import {
+  getExtractedFileName,
+  getFileExtension,
+  imageFileNameParser,
+} from './../utils/helpers';
 
 import app from '../app';
 import supertest from 'supertest';
@@ -12,11 +16,16 @@ describe('Helpers tests', () => {
   });
 
   it('getExtractedFileName return object { name: [name], ext: [ext] }', () => {
-    expect(getExtractedFileName('fileName.ext')).toEqual({ name: 'fileName', ext: '.ext' });
+    expect(getExtractedFileName('fileName.ext')).toEqual({
+      name: 'fileName',
+      ext: '.ext',
+    });
   });
 
   it('imageFileNameParser return thumb name', () => {
-    expect(imageFileNameParser('assets/fileName.jpg', 10, 20)).toEqual('assets/fileName-w10xh20.jpg');
+    expect(imageFileNameParser('assets/fileName.jpg', 10, 20)).toEqual(
+      'assets/fileName-w10xh20.jpg',
+    );
   });
 });
 
@@ -47,7 +56,9 @@ describe('Endpoint test for images-processing module', () => {
 
   // image does not exist
   it('get non existent file', async () => {
-    const response = await request.get('/api/images-processing?fileName=not-exist&height=100').expect(404);
+    const response = await request
+      .get('/api/images-processing?fileName=not-exist&height=100')
+      .expect(404);
 
     expect(response.body).toEqual({
       code: 'file_error',

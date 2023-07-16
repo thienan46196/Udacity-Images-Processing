@@ -10,8 +10,8 @@
     "predev": "yarn build",
     "dev": "set NODE_ENV=development && nodemon build/app.js",
     "debug": "set NODE_ENV=development && node --inspect-brk ./build/app.js --title=\"processing-image\" --body=\"Node.js\"",
-    "swagger": "tsoa spec",
     "jasmine": "jasmine",
+    "format": "prettier --write \"src/**/*.ts\"",
     "lint": "eslint . --ext .ts",
     "test": "yarn build && yarn jasmine",
     "tests": "yarn build && npm run jasmine --silent"

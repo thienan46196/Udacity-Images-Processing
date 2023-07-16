@@ -25,31 +25,30 @@ class App {
       res.header('Access-Control-Allow-Origin', '*');
       res.header(
         'Access-Control-Allow-Headers',
-        'Origin, X-Requested-With, Content-Type, Accept'
+        'Origin, X-Requested-With, Content-Type, Accept',
       );
       next();
     });
-    
 
     //landing page
     this.app.get('/', (req, res) => {
       res.send(new Date());
     });
-    
+
     //routes
-    this.app.use("/api",imagesProcessingRoute)
-    
+    this.app.use('/api', imagesProcessingRoute);
+
     //fallback
     this.app.get('*', (req, res) => {
       res.send('404 Not Found');
     });
-    
+
     const port = PORT || 4000;
-    
+
     this.app.listen(port, () => {
       console.log('App is listening at port:', port);
     });
-  } 
+  }
 }
 
 export default new App().app;
