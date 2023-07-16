@@ -22,13 +22,22 @@ class ImagesProcessingController {
     const requestQueries = request.query || defaultRequestQuery;
 
     const fileName = requestQueries.fileName ? requestQueries?.fileName : '';
+    let returnMessage = '';
+
+    if (!fileName) {
+      returnMessage = 'fileName is null or empty.Please input fileName.'
+      response
+        .status(Common.bad_request.status)
+        .json({ code: Common.bad_request.code, message: returnMessage });
+      return;
+    }
+
     const width = requestQueries.width
       ? parseInt(requestQueries.width.toString())
       : null;
     const height = requestQueries.height
       ? parseInt(requestQueries.height.toString())
       : null;
-    let returnMessage = '';
     try {
       const fullPath = `${Constant.fullPath}${fileName}`;
 
@@ -46,7 +55,7 @@ class ImagesProcessingController {
             console.log(err.message);
             response
               .status(Common.server_error.status)
-              .json({ code: 'file_error', message: returnMessage });
+              .json({ code: Common.server_error.code, message: returnMessage });
           } else {
             response.writeHead(Common.success.status, {
               'Content-Type': 'image/jpeg',
@@ -59,17 +68,17 @@ class ImagesProcessingController {
       // process full image
       else {
         if (!fs.existsSync(fullPath)) {
-          returnMessage = 'The full file does not exist';
+          returnMessage = 'The file does not exist';
           response
             .status(Common.not_found.status)
-            .json({ code: 'file_error', message: returnMessage });
+            .json({ code: Common.not_found.code, message: returnMessage });
         } else {
           fs.readFile(fullPath, async function (err, data) {
             if (err) {
-              returnMessage = 'Error reading full file';
+              returnMessage = 'Error reading file';
               response
                 .status(Common.server_error.status)
-                .json({ code: 'file_error', message: returnMessage });
+                .json({ code: Common.server_error.code, message: returnMessage });
               return;
             }
             // get original width & height
@@ -119,12 +128,10 @@ class ImagesProcessingController {
     fs.readdir(Constant.fullPath, function (err, files) {
       if (err) {
         console.error(err);
-        response
-          .status(Common.server_error.status)
-          .json({
-            code: 'file_error',
-            message: 'There is an error in reading files',
-          });
+        response.status(Common.server_error.status).json({
+          code: 'file_error',
+          message: 'There is an error in reading files',
+        });
       } else {
         response.json({ files });
         return;

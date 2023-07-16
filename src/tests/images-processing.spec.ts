@@ -4,6 +4,7 @@ import {
   imageFileNameParser,
 } from './../utils/helpers';
 
+import { Common } from '../resources/common';
 import app from '../app';
 import supertest from 'supertest';
 
@@ -41,7 +42,7 @@ describe('Endpoint test for images-processing module', () => {
     const response = await request
       .get('/api/images-processing?fileName=camera.jpg')
       .expect('Content-Type', 'image/jpeg')
-      .expect(200);
+      .expect(Common.success.status);
     expect(response).toBeTruthy();
   });
 
@@ -50,7 +51,7 @@ describe('Endpoint test for images-processing module', () => {
     const response = request
       .get('/api/images-processing?fileName=camera.jpg&height=100')
       .expect('Content-Type', 'image/jpeg')
-      .expect(200);
+      .expect(Common.success.status);
     expect(response).toBeTruthy();
   });
 
@@ -58,11 +59,23 @@ describe('Endpoint test for images-processing module', () => {
   it('get non existent file', async () => {
     const response = await request
       .get('/api/images-processing?fileName=not-exist&height=100')
-      .expect(404);
+      .expect(Common.not_found.status);
 
     expect(response.body).toEqual({
-      code: 'file_error',
-      message: 'The full file does not exist',
+      code: Common.not_found.code,
+      message: 'The file does not exist',
+    });
+  });
+
+  // fileName is null or empty
+  it('get non existent file', async () => {
+    const response = await request
+      .get('/api/images-processing')
+      .expect(Common.bad_request.status);
+
+    expect(response.body).toEqual({
+      code: Common.bad_request.code,
+      message: 'fileName is null or empty.Please input fileName.',
     });
   });
 });
