@@ -5,7 +5,7 @@ dotenv.config({
   path: path
     .join(__dirname, `../../.env.${process.env.NODE_ENV}`)
     .replace(/\\/g, '/')
-    .trim()
+    .trim(),
 });
 
 export const DB_URL = process.env.DB_URL;
