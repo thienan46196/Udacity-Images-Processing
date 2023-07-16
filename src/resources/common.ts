@@ -1,4 +1,9 @@
 export const Common = {
+  bad_request: {
+    code: 'bad_request',
+    message: 'Please re-enter the input params/body',
+    status: 400
+  },
   not_found: {
     code: 'not_found',
     message: 'Not found!',
@@ -25,3 +30,8 @@ export const Common = {
     status: 200
   }
 };
+
+export const Constant = {
+  fullPath: 'public/assets/full/',
+  thumbPath: 'public/assets/thumb/'
+}
